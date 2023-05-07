@@ -1,10 +1,18 @@
 grammar Calculator;
- 
-expression: integralExpression ((PLUS | MINUS) integralExpression)*;
-integralExpression: MINUS INT | INT;
- 
+
+expression: multiplicativeExpression ((PLUS | MINUS) multiplicativeExpression)*;
+multiplicativeExpression: powerExpression ((MULT | DIV) powerExpression)*;
+powerExpression: sqrtExpression (POW sqrtExpression)*;
+sqrtExpression: integralExpression | SQRT sqrtExpression;
+integralExpression: MINUS INT | INT | LPAREN expression RPAREN;
+
 INT: [0-9]+ ;
 PLUS: '+' ;
 MINUS: '-' ;
-INTEGRAL: 'cal';
+MULT: '*' ;
+DIV: '/' ;
+POW: '^';
+SQRT: 'sqrt';
+LPAREN: '(';
+RPAREN: ')';
 WS : [ \t\r\n]+ -> skip ;
