@@ -30,23 +30,32 @@ public class CalculatorMainListener extends CalculatorBaseListener {
     public void exitIntegralExpression(CalculatorParser.IntegralExpressionContext ctx) {
         if (ctx.MINUS() != null) {
             numbers.add((-1 * Double.valueOf(ctx.INT().toString())));
+        } else if (ctx.expression() != null) {
+            double value = getResult();
+            numbers.add(value);
         } else {
             numbers.add(Double.valueOf(ctx.INT().toString()));
         }
         super.exitIntegralExpression(ctx);
     }
 
+
     public void exitMultiplicativeExpression(CalculatorParser.MultiplicativeExpressionContext ctx) {
         if (ctx.DIV().size() != 0 || ctx.MULT().size() != 0) {
-            double result;
-            List<Double> tempList = getNumbersFromQueue(numbers.size() - 2);
-            if (ctx.DIV().size() != 0) {
-                result = numbers.pop() / numbers.pop();
-            } else {
-                result = numbers.pop() * numbers.pop();
+            for (int i = 1; i < ctx.getChildCount(); i += 2) {
+                double result;
+                List<Double> tempList = getNumbersFromQueue(numbers.size() - 2);
+                String operator = ctx.getChild(i).getText();
+                if (operator.equals("/")) {
+                    result = numbers.pop() / numbers.pop();
+                    populateQueue(tempList);
+                    numbers.add(result);
+                } else if (operator.equals("*")) {
+                    result = numbers.pop() * numbers.pop();
+                    populateQueue(tempList);
+                    numbers.add(result);
+                }
             }
-            populateQueue(tempList);
-            numbers.add(result);
         }
         super.exitMultiplicativeExpression(ctx);
     }
@@ -60,7 +69,7 @@ public class CalculatorMainListener extends CalculatorBaseListener {
                 Double exponent = numbers.pop();
                 Double result = Math.pow(value, exponent);
                 populateQueue(tempList);
-                numbers.push(result);
+                numbers.add(result);
             }
         }
         super.exitPowerExpression(ctx);
@@ -98,14 +107,14 @@ public class CalculatorMainListener extends CalculatorBaseListener {
 
 
     public static void main(String[] args) throws Exception {
-        double result = calc("7*4 + sqrt4 + -7 + 3^2");
+        double result = calc("7*4 + sqrt4  - 7 + 3^2");
         System.out.println("Result = " + result);
-        double result2 = calc("4/2^2 + 2");
+        double result2 = calc("2 + 4/2^2");
         System.out.println("Result = " + result2);
-        double result3 = calc("4 + 2^3 + 5*2");
+         double result3 = calc("3 * 6 / 3 * 3");
         System.out.println("Result = " + result3);
-        double result4 = calc("2 + 3 + 2*3");
-        System.out.println("Result = " + result4);
+        double result4 = calc("2 + 3*2 + 2");
+        System.out.println("Result = " + result4); ;
     }
 
     public static Double calc(String expression) {
