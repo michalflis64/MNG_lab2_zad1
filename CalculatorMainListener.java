@@ -45,14 +45,15 @@ public class CalculatorMainListener extends CalculatorBaseListener {
             for (int i = 1; i < ctx.getChildCount(); i += 2) {
                 double result;
                 List<Double> tempList = getNumbersFromQueue(numbers.size() - 2);
+                result = tempList.get(0);
                 String operator = ctx.getChild(i).getText();
                 if (operator.equals("/")) {
-                    result = numbers.pop() / numbers.pop();
-                    populateQueue(tempList);
+                    result /= tempList.get(1);
+                 //   populateQueue(tempList);
                     numbers.add(result);
                 } else if (operator.equals("*")) {
-                    result = numbers.pop() * numbers.pop();
-                    populateQueue(tempList);
+                    result /= tempList.get(1);
+               //     populateQueue(tempList);
                     numbers.add(result);
                 }
             }
@@ -107,13 +108,13 @@ public class CalculatorMainListener extends CalculatorBaseListener {
 
 
     public static void main(String[] args) throws Exception {
-        double result = calc("7*4 + sqrt4  - 7 + 3^2");
+   /*     double result = calc("7*4 + sqrt4  - 7 + 3^2");
         System.out.println("Result = " + result);
         double result2 = calc("2 + 4/2^2");
-        System.out.println("Result = " + result2);
+        System.out.println("Result = " + result2); */
          double result3 = calc("3 * 6 / 3 * 3");
         System.out.println("Result = " + result3);
-        double result4 = calc("2 + 3*2 + 2");
+        double result4 = calc("3 * 6");
         System.out.println("Result = " + result4); ;
     }
 
