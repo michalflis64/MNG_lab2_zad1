@@ -41,22 +41,19 @@ public class CalculatorMainListener extends CalculatorBaseListener {
 
 
     public void exitMultiplicativeExpression(CalculatorParser.MultiplicativeExpressionContext ctx) {
-        if (ctx.DIV().size() != 0 || ctx.MULT().size() != 0) {
-            for (int i = 1; i < ctx.getChildCount(); i += 2) {
-                double result;
-                List<Double> tempList = getNumbersFromQueue(numbers.size() - 2);
-                result = tempList.get(0);
-                String operator = ctx.getChild(i).getText();
+        int numberOfOperators = ctx.DIV().size() + ctx.MULT().size();
+        if (numberOfOperators > 0) {
+            List<Double> tempList = getNumbersFromQueue(numberOfOperators + 1);
+                double result = tempList.remove(0);
+                for(int i = 1; i< ctx.getChildCount(); i +=2){
+                    String operator = ctx.getChild(i).getText();
                 if (operator.equals("/")) {
-                    result /= tempList.get(1);
-                 //   populateQueue(tempList);
-                    numbers.add(result);
+                    result /= tempList.remove(0);
                 } else if (operator.equals("*")) {
-                    result /= tempList.get(1);
-               //     populateQueue(tempList);
-                    numbers.add(result);
+                    result *= tempList.remove(0);
                 }
             }
+            numbers.add(result);
         }
         super.exitMultiplicativeExpression(ctx);
     }
@@ -108,14 +105,14 @@ public class CalculatorMainListener extends CalculatorBaseListener {
 
 
     public static void main(String[] args) throws Exception {
-   /*     double result = calc("7*4 + sqrt4  - 7 + 3^2");
-        System.out.println("Result = " + result);
-        double result2 = calc("2 + 4/2^2");
-        System.out.println("Result = " + result2); */
-         double result3 = calc("3 * 6 / 3 * 3");
+    //    double result = calc("7*4 + sqrt4  - 7 + 3^2");
+    //    System.out.println("Result = " + result);
+   //     double result2 = calc("2 + 4/2^2");
+    //    System.out.println("Result = " + result2);
+         double result3 = calc("2 + 3 * 6 / 3 * 3");
         System.out.println("Result = " + result3);
-        double result4 = calc("3 * 6");
-        System.out.println("Result = " + result4); ;
+    //    double result4 = calc("2 + 3*2 + 2");
+    //    System.out.println("Result = " + result4); ;
     }
 
     public static Double calc(String expression) {
