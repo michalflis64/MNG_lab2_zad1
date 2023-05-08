@@ -43,7 +43,7 @@ public class CalculatorMainListener extends CalculatorBaseListener {
     public void exitMultiplicativeExpression(CalculatorParser.MultiplicativeExpressionContext ctx) {
         int numberOfOperators = ctx.DIV().size() + ctx.MULT().size();
         if (numberOfOperators > 0) {
-            List<Double> tempList = getNumbersFromQueue(numberOfOperators + 1);
+            List<Double> tempList = getLastNumbersFromQueue(numberOfOperators + 1);
                 double result = tempList.remove(0);
                 for(int i = 1; i< ctx.getChildCount(); i +=2){
                     String operator = ctx.getChild(i).getText();
@@ -61,7 +61,7 @@ public class CalculatorMainListener extends CalculatorBaseListener {
     @Override
     public void exitPowerExpression(CalculatorParser.PowerExpressionContext ctx) {
         if (ctx.POW().size() != 0) {
-            List<Double> tempList = getNumbersFromQueue(numbers.size() - 2);
+            List<Double> tempList = getFirstNumbersFromQueue(numbers.size() - 2);
             if (ctx.POW().size() != 0) {
                 Double value = numbers.pop();
                 Double exponent = numbers.pop();
@@ -76,7 +76,7 @@ public class CalculatorMainListener extends CalculatorBaseListener {
     @Override
     public void exitSqrtExpression(CalculatorParser.SqrtExpressionContext ctx) {
         if (ctx.SQRT() != null) {
-            List<Double> tempList = getNumbersFromQueue(numbers.size() - 1);
+            List<Double> tempList = getFirstNumbersFromQueue(numbers.size() - 1);
             if (ctx.SQRT() != null) {
                 Double value = Math.sqrt(numbers.pop());
                 populateQueue(tempList);
@@ -91,7 +91,15 @@ public class CalculatorMainListener extends CalculatorBaseListener {
         return numbers.peek();
     }
 
-    private List<Double> getNumbersFromQueue(int amount) {
+    private List<Double> getLastNumbersFromQueue(int amount) {
+        List<Double> tempList = new ArrayList<>();
+        for (int i = 0; i < amount; i++) {
+            tempList.add(0,numbers.pollLast());
+        }
+        return tempList;
+    }
+
+    private List<Double> getFirstNumbersFromQueue(int amount) {
         List<Double> tempList = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             tempList.add(numbers.pop());
@@ -105,14 +113,16 @@ public class CalculatorMainListener extends CalculatorBaseListener {
 
 
     public static void main(String[] args) throws Exception {
-    //    double result = calc("7*4 + sqrt4  - 7 + 3^2");
-    //    System.out.println("Result = " + result);
-   //     double result2 = calc("2 + 4/2^2");
-    //    System.out.println("Result = " + result2);
+        double result = calc("7*4 + sqrt4  - 7 + 3^2");
+        System.out.println("Result = " + result);
+        double result2 = calc("2 + 4/2^2");
+        System.out.println("Result = " + result2);
          double result3 = calc("2 + 3 * 6 / 3 * 3");
         System.out.println("Result = " + result3);
-    //    double result4 = calc("2 + 3*2 + 2");
-    //    System.out.println("Result = " + result4); ;
+        double result4 = calc("2 + 3*2 + 2");
+        System.out.println("Result = " + result4); ;
+        double result5 = calc("3 + 4 - 5 - 6");
+        System.out.println("Result = " + result5); ;
     }
 
     public static Double calc(String expression) {
